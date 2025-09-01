@@ -1,0 +1,25 @@
+{
+  "name": "go-fiber-api-tests",
+  "version": "1.0.0",
+  "description": "Dredd API testing for Go Fiber API",
+  "main": "index.js",
+  "scripts": {
+    "test:dredd": "dredd --config=./dredd.yml",
+    "test:dredd-verbose": "dredd --config=./dredd.yml --level=debug",
+    "install-dredd": "npm install -g dredd",
+    "setup": "npm install"
+  },
+  "devDependencies": {
+    "dredd": "^14.1.0",
+    "node-fetch": "^2.6.7"
+  },
+  "keywords": [
+    "api",
+    "testing",
+    "dredd",
+    "go",
+    "fiber"
+  ],
+  "author": "",
+  "license": "MIT"
+}
