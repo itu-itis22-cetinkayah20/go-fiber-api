@@ -125,7 +125,10 @@ The project includes comprehensive API testing using Dredd framework.
    ```bash
    dredd
    ```
-
+3. **Alternative to run tests**
+```bash
+  go test -v ./tests/ -timeout 120s
+   ```
 ### Test Configuration
 
 - **API Schema**: `schemas/api-schema.yaml`

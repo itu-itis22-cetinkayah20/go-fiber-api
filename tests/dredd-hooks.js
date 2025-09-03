@@ -221,28 +221,8 @@ function generateLoginCredentials(statusCode) {
 
 // Check if test should be skipped (dynamic based on patterns)
 function shouldSkipTest(transactionName) {
-  if (!transactionName) return false;
-  
-  // Generic skip patterns - API agnostic
-  const skipPatterns = [
-    '> 500',           // Server error simulations often don't work in test environments
-    '> 404',           // Not found simulations may have timing issues
-    '> 503',           // Service unavailable simulations
-    'simulation',      // Any simulation-based tests
-    'mock',            // Mock-based tests that may be unreliable
-  ];
-  
-  // Additional skip for specific test types that commonly have issues
-  const problematicPatterns = [
-    'Get.*> 500',      // GET requests with 500 errors
-    'Delete.*> 400',   // DELETE requests with 400 errors (often timing related)
-    'Update.*> 404',   // UPDATE requests with 404 (record may not exist)
-  ];
-  
-  return [...skipPatterns, ...problematicPatterns].some(pattern => {
-    const regex = new RegExp(pattern, 'i');
-    return regex.test(transactionName);
-  });
+  // Disable automatic skipping - let all tests run
+  return false;
 }
 
 // Initialize
@@ -351,7 +331,6 @@ hooks.beforeEach((transaction, done) => {
   const statusCode = statusCodeMatch ? statusCodeMatch[1] : null;
   
 
-  
   // Generate dynamic test data for all endpoints
   const testData = generateTestData(method, uri, statusCode, transaction.name);
   if (testData) {
@@ -365,6 +344,33 @@ hooks.beforeEach((transaction, done) => {
     if (loginData) {
       transaction.request.body = JSON.stringify(loginData);
       console.log(`Using login credentials for ${method} ${uri} (${statusCode}):`, loginData);
+    }
+  }
+
+  // Special handling for 404 tests - modify URIs to cause 404 responses
+  if (statusCode === '404' || (transaction.name && transaction.name.includes('404'))) {
+    if (uri.startsWith('/api/products/')) {
+      // Use non-existent product ID for 404 test
+      transaction.request.uri = '/api/products/999999';
+      transaction.fullPath = '/api/products/999999';
+      console.log(`Using non-existent product for 404 test: /api/products/999999`);
+    } else if (uri.startsWith('/api/profile')) {
+      // Use simulate parameter for profile 404 test
+      const separator = uri.includes('?') ? '&' : '?';
+      transaction.request.uri = uri + separator + 'simulate=404';
+      transaction.fullPath = transaction.request.uri;
+      console.log(`Adding simulate=404 parameter for profile 404 test: ${transaction.request.uri}`);
+    }
+  }
+
+  // Special handling for 500 tests - these might need server-side simulation
+  if (statusCode === '500' || (transaction.name && transaction.name.includes('500'))) {
+    if (uri.startsWith('/api/products')) {
+      // Add a special parameter that could trigger a 500 error
+      const separator = uri.includes('?') ? '&' : '?';
+      transaction.request.uri = uri + separator + 'simulate=500';
+      transaction.fullPath = transaction.request.uri;
+      console.log(`Adding simulate=500 parameter for 500 test: ${transaction.request.uri}`);
     }
   }
 
