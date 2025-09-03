@@ -69,17 +69,22 @@ A high-performance RESTful API built with Go Fiber framework featuring JWT authe
    go mod download
    ```
 
-3. **Install Node.js dependencies for testing**
+3. **Install Dredd globally**
+   ```bash
+   npm install -g dredd
+   ```
+
+4. **Install Node.js dependencies for testing**
    ```bash
    npm install
    ```
 
-4. **Set up PostgreSQL database**
+5. **Set up PostgreSQL database**
    - Create a PostgreSQL database named `ecommerce_api`
    - Update database credentials in `config/database.go` if needed
    - Default connection: `host=localhost user=postgres password=1234 dbname=ecommerce_api port=5432`
 
-5. **Build the application**
+6. **Build the application**
    ```bash
    go build -o go-fiber-api.exe
    ```
