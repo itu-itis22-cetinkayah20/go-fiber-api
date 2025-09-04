@@ -12,8 +12,6 @@ const CONFIG = {
   OPENAPI_SCHEMA_PATH: process.env.OPENAPI_SCHEMA_PATH || 'schemas/api-schema.yaml',
   SERVER_PORT: process.env.SERVER_PORT || '3000',
   UNIQUE_EMAIL_SUFFIX: process.env.UNIQUE_EMAIL_SUFFIX || '@example.com',
-  TEST_PRODUCT_PRICE: parseFloat(process.env.TEST_PRODUCT_PRICE) || 99.99,
-  TEST_ORDER_TOTAL: parseFloat(process.env.TEST_ORDER_TOTAL) || 149.99,
   ENABLE_DEBUG_LOGGING: process.env.ENABLE_DEBUG_LOGGING === 'true',
   ENABLE_DYNAMIC_DATA_GENERATION: process.env.ENABLE_DYNAMIC_DATA_GENERATION !== 'false',
   ENABLE_ERROR_SIMULATION: process.env.ENABLE_ERROR_SIMULATION !== 'false',
@@ -163,8 +161,13 @@ function generateValidValue(type, format, fieldName) {
   }
   
   if (type === 'number' || type === 'integer') {
-    if (fieldName.toLowerCase().includes('total') || fieldName.toLowerCase().includes('price')) {
-      return CONFIG.TEST_PRODUCT_PRICE;
+    if (fieldName.toLowerCase().includes('total')) {
+      // Generate dynamic order total (between 50-500)
+      return Math.round((Math.random() * 450 + 50) * 100) / 100;
+    }
+    if (fieldName.toLowerCase().includes('price')) {
+      // Generate dynamic product price (between 10-200)
+      return Math.round((Math.random() * 190 + 10) * 100) / 100;
     }
     if (fieldName.toLowerCase().includes('id')) {
       return 1;
