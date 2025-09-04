@@ -1,6 +1,17 @@
 # Go Fiber API
 
-[![Go Version](https://img.shields.io/badge/Go-1.18+-blue.svg)](https://golang.org)
+[![Go Version](https://img.shields.io/badge/Go-1.18+-blue.svg)5. **Setup d6. **Generate configuration and run**
+   ```bash
+   npm run config  # Generate Dredd config from environment variables
+   swag init
+   go run .
+   ```se** (PostgreSQL)
+   ```bash
+   # Create database: ecommerce_api
+   # Copy .env.example to .env and configure your settings
+   cp .env.example .env
+   # Edit .env file with your database credentials and API configuration
+   ```ps://golang.org)
 [![Fiber Version](https://img.shields.io/badge/Fiber-v2.32.0-green.svg)](https://gofiber.io)
 [![Swagger UI](https://img.shields.io/badge/Swagger-UI%20Enabled-brightgreen.svg)](http://localhost:3000/swagger/)
 [![API Tests](https://img.shields.io/badge/API%20Tests-25%2F25%20Passing-success.svg)](#testing-status)
@@ -142,6 +153,30 @@ A high-performance RESTful API built with Go Fiber framework featuring JWT authe
    ```
 
 ## Configuration
+
+### Environment Variables
+The application supports comprehensive configuration through environment variables. Copy `.env.example` to `.env` and customize for your environment:
+
+```bash
+# Core API Configuration
+API_BASE_URL=http://localhost:3000          # API base URL
+API_NAME=Your API Name                      # API name for documentation
+SERVER_PORT=3000                           # Server port
+
+# Schema and Testing
+OPENAPI_SCHEMA_PATH=schemas/api-schema.yaml # OpenAPI schema file path
+DREDD_HOOKS_PATH=tests/dredd-hooks.js      # Test hooks file path
+SERVER_START_COMMAND=go run main.go        # Command to start your API server
+
+# Database Configuration
+DATABASE_URL=host=localhost user=postgres password=1234 dbname=ecommerce_api port=5432 sslmode=disable
+JWT_SECRET=your-super-secret-jwt-key       # JWT signing secret
+
+# Test Configuration
+TEST_USER_EMAIL=test@example.com           # Test user credentials
+EXISTING_USER_EMAIL=existing@example.com   # Existing user for login tests
+ENABLE_DEBUG_LOGGING=true                  # Enable detailed logging
+```
 
 ### Database Configuration
 The application uses PostgreSQL database. Update the connection settings in `config/database.go`:
