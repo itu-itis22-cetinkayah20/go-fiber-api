@@ -11,10 +11,6 @@ const CONFIG = {
   API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:3000',
   OPENAPI_SCHEMA_PATH: process.env.OPENAPI_SCHEMA_PATH || 'schemas/api-schema.yaml',
   SERVER_PORT: process.env.SERVER_PORT || '3000',
-  TEST_USER_EMAIL: process.env.TEST_USER_EMAIL || 'test-user@example.com',
-  TEST_USER_PASSWORD: process.env.TEST_USER_PASSWORD || 'testpassword123',
-  TEST_USER_FIRST_NAME: process.env.TEST_USER_FIRST_NAME || 'Test',
-  TEST_USER_LAST_NAME: process.env.TEST_USER_LAST_NAME || 'User',
   UNIQUE_EMAIL_SUFFIX: process.env.UNIQUE_EMAIL_SUFFIX || '@example.com',
   TEST_PRODUCT_PRICE: parseFloat(process.env.TEST_PRODUCT_PRICE) || 99.99,
   TEST_ORDER_TOTAL: parseFloat(process.env.TEST_ORDER_TOTAL) || 149.99,
@@ -150,12 +146,6 @@ function generateTestData(method, uri, statusCode, transactionName) {
   }
 }
 
-// Shared test credentials from configuration
-let testCredentials = {
-  email: CONFIG.TEST_USER_EMAIL,
-  password: CONFIG.TEST_USER_PASSWORD
-};
-
 // Generate valid values based on field type and format
 function generateValidValue(type, format, fieldName) {
   if (type === 'string') {
@@ -164,10 +154,10 @@ function generateValidValue(type, format, fieldName) {
       return `test${Date.now()}${Math.floor(Math.random() * 1000)}${CONFIG.UNIQUE_EMAIL_SUFFIX}`;
     }
     if (fieldName.toLowerCase().includes('password')) {
-      return CONFIG.TEST_USER_PASSWORD;
+      return 'testpassword123';
     }
     if (fieldName.toLowerCase().includes('name')) {
-      return fieldName.includes('first') ? CONFIG.TEST_USER_FIRST_NAME : CONFIG.TEST_USER_LAST_NAME;
+      return fieldName.includes('first') ? 'Test' : 'User';
     }
     return `test-${fieldName}-value`;
   }
@@ -214,17 +204,17 @@ function generateInvalidValue(type, format, fieldName) {
 // Generate conflict values for 409 tests
 function generateConflictValue(type, format, fieldName) {
   if (type === 'string' && (format === 'email' || fieldName.toLowerCase().includes('email'))) {
-    // For 409 test, use the registered user's email if available, otherwise test user email
-    return registeredUser ? registeredUser.email : CONFIG.TEST_USER_EMAIL;
+    // For 409 test, use the registered user's email if available
+    return registeredUser ? registeredUser.email : 'conflict@example.com';
   }
   
   if (fieldName.toLowerCase().includes('password')) {
-    return registeredUser ? registeredUser.password : CONFIG.TEST_USER_PASSWORD;
+    return registeredUser ? registeredUser.password : 'conflictpassword';
   }
   
   if (fieldName.toLowerCase().includes('name')) {
-    const firstName = registeredUser ? registeredUser.first_name : CONFIG.TEST_USER_FIRST_NAME;
-    const lastName = registeredUser ? registeredUser.last_name : CONFIG.TEST_USER_LAST_NAME;
+    const firstName = registeredUser ? registeredUser.first_name : 'Conflict';
+    const lastName = registeredUser ? registeredUser.last_name : 'User';
     return fieldName.includes('first') ? firstName : lastName;
   }
   
@@ -234,15 +224,20 @@ function generateConflictValue(type, format, fieldName) {
 // Special handling for login endpoints - use registered user credentials
 function generateLoginCredentials(statusCode) {
   if (statusCode === '200') {
-    // Use registered user credentials for successful login, fallback to test user
-    const user = registeredUser || {
-      email: CONFIG.TEST_USER_EMAIL,
-      password: CONFIG.TEST_USER_PASSWORD
-    };
-    return {
-      email: user.email,
-      password: user.password
-    };
+    // Use registered user credentials for successful login
+    if (registeredUser) {
+      return {
+        email: registeredUser.email,
+        password: registeredUser.password
+      };
+    } else {
+      // Fallback - this should not happen if register test runs first
+      console.warn('No registered user available for login test');
+      return {
+        email: 'fallback@example.com',
+        password: 'fallbackpassword'
+      };
+    }
   } else if (statusCode === '401') {
     // Use invalid credentials for 401 test
     return {
