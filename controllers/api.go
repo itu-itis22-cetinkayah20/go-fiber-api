@@ -64,7 +64,7 @@ func GetProduct(c *fiber.Ctx) error {
 		})
 	}
 	return c.JSON(product)
-} 
+}
 
 // GetCategories - Public endpoint to get all categories
 // @Summary      Get all categories
@@ -282,4 +282,3 @@ func DeleteOrder(c *fiber.Ctx) error {
 		Message: "Order cancelled successfully",
 	})
 }
-

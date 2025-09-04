@@ -1,13 +1,20 @@
 # Go Fiber API
 
-A high-performance RESTful API built with Go Fiber framework featuring JWT authentication, PostgreSQL database integration, and fully automated API testing with Dredd framework. This project implements a complete generic testing solution with zero manual intervention.
+[![Go Version](https://img.shields.io/badge/Go-1.18+-blue.svg)](https://golang.org)
+[![Fiber Version](https://img.shields.io/badge/Fiber-v2.32.0-green.svg)](https://gofiber.io)
+[![Swagger UI](https://img.shields.io/badge/Swagger-UI%20Enabled-brightgreen.svg)](http://localhost:3000/swagger/)
+[![API Tests](https://img.shields.io/badge/API%20Tests-25%2F25%20Passing-success.svg)](#testing-status)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-blue.svg)](https://postgresql.org)
+
+A high-performance RESTful API built with Go Fiber framework featuring JWT authentication, PostgreSQL database integration, **interactive Swagger UI documentation**, and fully automated API testing with Dredd framework. This project implements a complete generic testing solution with zero manual intervention.
 
 ## Features
 
-- 🚀 **High Performance**: Built with Go Fiber v2.30.0 for fast HTTP performance
+- 🚀 **High Performance**: Built with Go Fiber v2.32.0 for fast HTTP performance
 - 🔐 **JWT Authentication**: Secure user authentication and authorization
 - 🗄️ **PostgreSQL Database**: GORM ORM with PostgreSQL for robust data persistence
 - 📝 **OpenAPI 3.0**: Complete API documentation with schema validation
+- 🎨 **Swagger UI**: Interactive API documentation and testing interface
 - 🧪 **Fully Automated Testing**: Zero-manual-intervention testing with Dredd framework
 - 🤖 **Schema-Driven Tests**: Automatic test generation from OpenAPI specification
 - 🎯 **Generic Test Framework**: Reusable testing solution for any REST API
@@ -41,14 +48,49 @@ A high-performance RESTful API built with Go Fiber framework featuring JWT authe
 ## Tech Stack
 
 - **Backend**: Go 1.18+
-- **Framework**: Fiber v2.30.0
+- **Framework**: Fiber v2.32.0
 - **Database**: PostgreSQL (GORM v1.24.1)
 - **ORM**: GORM v1.24.1
 - **Authentication**: JWT (golang-jwt/jwt v4.5.2)
 - **Password Hashing**: bcrypt
+- **API Documentation**: Swagger UI with swaggo/swag
 - **API Testing**: Dredd 14.1.0 with automated hooks
 - **Documentation**: OpenAPI 3.0 with schema validation
 - **Testing Framework**: Generic, schema-driven test automation
+
+## Prerequisites
+
+- Go 1.18 or higher
+- PostgreSQL 12+
+- Node.js 18+ (for Dredd testing)
+
+## Quick Start
+
+1. **Clone and setup**
+   ```bash
+   git clone https://github.com/itu-itis22-cetinkayah20/go-fiber-api.git
+   cd go-fiber-api
+   go mod download
+   ```
+
+2. **Install Swagger CLI**
+   ```bash
+   go install github.com/swaggo/swag/cmd/swag@latest
+   ```
+
+3. **Setup database** (PostgreSQL)
+   ```bash
+   # Create database: ecommerce_api
+   # Default connection: host=localhost user=postgres password=1234 dbname=ecommerce_api port=5432
+   ```
+
+4. **Generate docs and run**
+   ```bash
+   swag init
+   go run .
+   ```
+
+5. **Access Swagger UI**: Open `http://localhost:3000/swagger/`
 
 ## Prerequisites
 
@@ -84,7 +126,17 @@ A high-performance RESTful API built with Go Fiber framework featuring JWT authe
    - Update database credentials in `config/database.go` if needed
    - Default connection: `host=localhost user=postgres password=1234 dbname=ecommerce_api port=5432`
 
-6. **Build the application**
+6. **Install Swagger documentation generator**
+   ```bash
+   go install github.com/swaggo/swag/cmd/swag@latest
+   ```
+
+7. **Generate Swagger documentation**
+   ```bash
+   swag init
+   ```
+
+8. **Build the application**
    ```bash
    go build -o go-fiber-api.exe
    ```
@@ -112,6 +164,48 @@ The application uses the following environment variables:
    ```
    
    The server will start on `http://localhost:3000`
+
+2. **Access Swagger UI**
+   
+   Open your browser and navigate to `http://localhost:3000/swagger/` to access the interactive API documentation and testing interface.
+
+## Swagger UI Integration
+
+This project includes a comprehensive Swagger UI integration that provides:
+
+### 🎨 **Interactive API Documentation**
+- **Complete API Explorer**: Browse all endpoints with detailed descriptions
+- **Request/Response Examples**: See actual JSON examples for all operations
+- **Model Schemas**: Explore data structures with field descriptions and validation rules
+- **Authentication Testing**: Built-in JWT token management for protected endpoints
+
+### 📋 **API Testing Interface**
+- **Try It Out**: Execute API requests directly from the browser
+- **Authentication Flow**: Login to get JWT token and test protected endpoints
+- **Parameter Testing**: Test different query parameters and request bodies
+- **Response Validation**: See actual API responses with status codes
+
+### 🔧 **Technical Features**
+- **Auto-Generated Documentation**: Swagger docs are automatically generated from code annotations
+- **Real-time Updates**: Documentation updates automatically when you modify code annotations
+- **JWT Security Integration**: Swagger UI supports Bearer token authentication
+- **Standardized Responses**: Uses consistent response models (ErrorResponse, MessageResponse, TokenResponse)
+
+### 🚀 **How to Use Swagger UI**
+
+1. **Start the application**: `./go-fiber-api.exe`
+2. **Open Swagger UI**: Navigate to `http://localhost:3000/swagger/`
+3. **Authentication**: 
+   - Use `/auth/login` endpoint to get JWT token
+   - Click "Authorize" button and enter `Bearer <your-token>`
+   - Test protected endpoints with authentication
+4. **API Testing**: Click "Try it out" on any endpoint to test it
+
+### 📚 **Swagger Annotations**
+The API documentation is generated from comprehensive annotations in the code:
+- **Controller Functions**: Detailed endpoint descriptions with parameters and responses
+- **Model Structs**: Complete data structure documentation with examples
+- **Security Requirements**: JWT authentication specifications for protected routes
 
 
 ## API Testing
@@ -184,16 +278,20 @@ go-fiber-api/
 │   ├── database.go       # Database configuration and connection
 │   └── seed.go          # Test data seeding
 ├── controllers/
-│   ├── api.go           # API endpoint handlers
-│   └── auth.go          # Authentication handlers
+│   ├── api.go           # API endpoint handlers with Swagger annotations
+│   └── auth.go          # Authentication handlers with Swagger annotations
+├── docs/                # Auto-generated Swagger documentation
+│   ├── docs.go          # Generated Go documentation
+│   └── swagger.json     # Generated OpenAPI specification
 ├── middleware/
 │   └── auth.go          # JWT authentication middleware
 ├── models/
-│   └── user.go          # Database models (User, Product, Category, Order)
+│   ├── user.go          # Database models with Swagger documentation
+│   └── response.go      # Standardized response models for API
 ├── routes/
 │   └── routes.go        # Route definitions
 ├── schemas/
-│   └── api-schema.yaml  # OpenAPI 3.0 specification
+│   └── api-schema.yaml  # OpenAPI 3.0 specification for testing
 ├── tests/
 │   ├── dredd-hooks.js   # Fully automated generic test framework
 │   └── dredd_test.go    # Go test integration
@@ -209,7 +307,17 @@ go-fiber-api/
 
 ## API Documentation
 
-The API is fully documented using OpenAPI 3.0 specification in `schemas/api-schema.yaml`. The documentation includes:
+### Swagger UI Interface
+The API features a comprehensive **Swagger UI** interface accessible at `http://localhost:3000/swagger/` when the server is running. This interactive documentation provides:
+
+- **Complete API Explorer**: All endpoints with detailed descriptions and parameters
+- **Live API Testing**: Execute requests directly from the browser interface
+- **Authentication Integration**: JWT token management for testing protected endpoints
+- **Model Documentation**: Detailed schemas for all request/response models
+- **Example Data**: Real JSON examples for all API operations
+
+### OpenAPI Specification
+The API is also documented using OpenAPI 3.0 specification in `schemas/api-schema.yaml` for automated testing. The documentation includes:
 
 - **Complete endpoint specifications** with all HTTP methods
 - **Request/response schemas** with validation rules  
@@ -218,17 +326,18 @@ The API is fully documented using OpenAPI 3.0 specification in `schemas/api-sche
 - **Example requests and responses** for all scenarios
 - **Simulation parameters** for error testing (simulate=404, simulate=500, etc.)
 
-The documentation serves as the **single source of truth** for both API behavior and automated test generation.
+The Swagger UI serves as the **primary documentation interface** for developers, while the OpenAPI schema serves as the **single source of truth** for automated test generation.
 
 ## Development
 
 ### Adding New Endpoints
 
-1. Define the model in `models/user.go`
-2. Create handler functions in `controllers/`
+1. Define the model in `models/user.go` with Swagger annotations
+2. Create handler functions in `controllers/` with comprehensive Swagger comments
 3. Add routes in `routes/routes.go`
-4. Update the OpenAPI schema in `schemas/api-schema.yaml`
-5. Add test hooks in `tests/dredd-hooks.js`
+4. Generate updated Swagger docs with `swag init`
+5. Update the OpenAPI schema in `schemas/api-schema.yaml` for testing
+6. Add test hooks in `tests/dredd-hooks.js`
 
 ### Database Migrations
 
