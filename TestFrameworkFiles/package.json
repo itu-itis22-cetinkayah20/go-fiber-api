@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "config": "node generate-dredd-config.js",
+    "analyze": "node auto-configure.js",
+    "auto-setup": "node auto-configure.js && npm run config",
     "test:dredd": "npm run config && dredd --config=./dredd.yml",
     "test:dredd-verbose": "npm run config && dredd --config=./dredd.yml --level=debug",
     "install-dredd": "npm install -g dredd",
@@ -24,5 +26,8 @@
     "fiber"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "yaml": "^2.8.1"
+  }
 }

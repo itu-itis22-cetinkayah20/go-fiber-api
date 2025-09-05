@@ -56,14 +56,21 @@ SERVER_PORT=YENI_PORT                            # API port numarası
 # Schema Configuration - ZORUNLU
 OPENAPI_SCHEMA_PATH=schemas/yeni-api-schema.yaml # Yeni OpenAPI schema dosyanız
 
+# Authentication Strategy Configuration - API'nize göre ayarlayın
+AUTH_TYPE=bearer                                 # bearer, apikey, basic, oauth2, custom
+AUTH_HEADER_NAME=Authorization                   # Authentication header adı
+AUTH_TOKEN_PREFIX=Bearer                         # Token prefix (Bearer, Token, vb.)
+AUTH_REGISTER_ENDPOINT=/auth/register            # Register endpoint path
+AUTH_LOGIN_ENDPOINT=/auth/login                  # Login endpoint path  
+AUTH_TOKEN_FIELD=token                           # Response'da token field adı
+
+# API Response Configuration - API'nizin response pattern'ına göre
+SUCCESS_STATUS_CODES=200,201,202,204             # Başarı status kodları
+ERROR_STATUS_CODES=400,401,403,404,409,422,500   # Hata status kodları
+
 # Database Configuration - İhtiyaç halinde değiştirin
 DATABASE_URL=your-database-connection-string     # Kendi DB connection string'iniz
 JWT_SECRET=your-jwt-secret                       # JWT secret key'iniz
-
-# Test User Credentials - API'nize uygun değerler
-TEST_USER_EMAIL=test@yourdomain.com
-EXISTING_USER_EMAIL=existing@yourdomain.com
-TEST_USER_PASSWORD=yourpassword
 ```
 
 ### 4. OpenAPI Schema Oluşturun
